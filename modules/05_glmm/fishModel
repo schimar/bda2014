@@ -1,0 +1,20 @@
+model{
+
+	for(i in 1:N){
+		## Normal likelihood
+		y[i] ~ dnorm(mu[i], tau)
+		## Linear model for mu[i]
+		mu[i]<- beta[1] + beta[2] * x[i]
+	}
+	
+	## Uninforamtive priors on regression coefficients and tau
+	beta[1] ~ dnorm(0, 1e-6)
+	beta[2] ~ dnorm(0, 1e-6)
+	tau ~ dgamma(0.01, 0.01)
+}
+
+
+
+
+
+

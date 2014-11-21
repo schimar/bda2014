@@ -1,0 +1,31 @@
+model
+{
+
+	for(i in 1:N){
+		## Normal samplind distribution for logit-response
+		y[i] ~ dnorm(mu[i], tau)
+		## Linear model
+		mu[i]<-beta1[species[i]] + beta2[stand[i]] + beta3 * sd[stand[i]] + beta4 * dsi[stand[i]]
+	}
+	
+	for(j in 1:Nspecies){
+		## Hierarchical model for species
+		beta1[j] ~ dnorm(alpha, nu[1])
+	}
+
+	for(j in 1:(Nstand-1)){
+		## Hierarchical model for stand with sum to zero constraints
+		beta2[j] ~ dnorm(0, nu[2])
+	}
+	beta2[Nstand]<- 1 - sum(beta2[1:(Nstand-1)])
+
+	## Priors on population precision
+	alpha ~ dnorm(0,1e-6)
+	nu[1] ~ dgamma(0.01,0.01)
+	nu[2] ~ dgamma(0.01,0.01)
+	
+	## Additional uninformative priors
+	beta3 ~ dnorm(0,1e-6)
+	beta4 ~ dnorm(0,1e-6)
+	tau ~ dgamma(0.01,0.01)
+}

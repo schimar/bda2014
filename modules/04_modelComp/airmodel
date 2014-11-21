@@ -1,0 +1,22 @@
+model{
+
+	for(i in 1:N){
+		## Normal sampling distribution
+		y[i] ~ dnorm(mu[i], tau)
+		## Linear model with interaction and intercept
+		mu[i]<-beta[1] + beta[2] * temp[i] + beta[3] * wind[i] + beta[4] * temp[i] * wind[i]
+		## New or replicate data for model checking
+		ynew[i] ~ dnorm(mu[i], tau)
+		## Residuals for model checking
+		resid[i]<-y[i] - mu[i]
+
+	}
+	
+	for(j in 1:4){
+		## Uninformative priors on regression coefficients
+		beta[j] ~ dnorm(0, 1e-6)
+	}
+	## Prior on tau
+	tau ~ dgamma(0.01, 0.01)
+
+}
