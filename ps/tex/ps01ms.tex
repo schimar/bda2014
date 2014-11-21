@@ -1,0 +1,86 @@
+\documentclass[letterpaper, 12pt]{article}
+%----------------------------------------
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex} 
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+
+\addtolength{\topmargin}{-.875in}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+\pagestyle{myheadings}
+\markright{bda - ps01 - martin schilling}
+
+%---------------------------------------
+\begin{document}
+
+
+\section*{Problem Set 01}
+
+\begin{enumerate}
+
+	\item % 1.
+
+	\begin{enumerate}
+		\item Of all the values, 955 (95.5\%) were included (and 45 were not included). Compared to the expectation, a slightly higher proportion could be seen. (I would expect 950 to be included, based on the normal approximation).
+		\item For p = 0.02, 6 were included and 994 did not make it. The true coverage (of the 95\% ci) is absolutely affected by p, as the entire distribution moves towards 0 (see Fig.1).
+		\item see Figure 1. The difference between the true coverage of the 95\% ci and the coverage in a and b, respectively could simply be due to noise, since random values are chosen that should approximate to p, but could potentially not match exactly with the given p.
+
+	\end{enumerate}
+
+	\item % 2.
+	\begin{enumerate}
+
+		\item Given the following equation, \\$L = \prod\limits_{i=1}^{n} \frac{{e^{ - \lambda } \lambda ^y }}{{y!}}$  \\
+		the log-likelihood is: \\
+	
+		$l(\lambda, y) = \sum\limits_{i=1}^{n} y_{i} log\lambda - n\lambda$
+		
+% {\displaystyle \prod_{i=1}^{n} a_n} \\
+
+% $ {\prod_{i=1}^{\infty} \frac{a_{i}}{2}} $
+
+		\item see Fig.2. According to the following equation, my MLE rate parameter is 10.8. \\
+		$ \lambda = \frac{1}{n} \sum\limits_{i=1}^{n} y_{i}$ \\
+		{\small(couldn't get the estimate sign over lambda...)}
+
+		\item see Fig.2 for relative likelihoods. Obviously, the likelihood value for a parameter value of 22 is far smaller than for the MLE as well as 22.
+		\item If I take only the data from the first hospital (death rate= 6), the MLE = 6 and the peak shifts accordingly (see Fig. 3). 
+
+\end{enumerate}
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H!]\centering
+	\includegraphics[width=1\textwidth]{/home/schimar/Desktop/bda/ps/pmf_05_002.pdf}
+	\caption{Probability Mass Function (for p=0.5 and p= 0.02) for the Binomial Distribution with n= 20.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H!]\centering
+	\includegraphics[width=0.7\textwidth]{/home/schimar/Desktop/bda/ps/dpois_mle.pdf}
+	\caption{Relative likelihood for possible lambda values. Yellow: MLE parameter value (10.8), Blue: lambda = 12 (relative likelihood to MLE: 0.733), Orange: lambda = 22 (rel. likelihood: $2.31*10^{-8}$) }
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H!]\centering
+	\includegraphics[width=1\textwidth]{/home/schimar/Desktop/bda/ps/dpois_6.pdf}
+	\caption{Likelihood surface for data from the first hospital only (death rate= 6). }
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{enumerate}
+
+
+\end{document}

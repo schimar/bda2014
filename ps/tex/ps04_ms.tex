@@ -1,0 +1,53 @@
+\documentclass[letterpaper, 12pt]{article}
+%----------------------------------------
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex} 
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+
+\addtolength{\topmargin}{-.875in}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+\pagestyle{myheadings}
+\markright{bda - ps04 - martin schilling}
+
+%---------------------------------------
+\begin{document}
+
+\noindent The data was modeled in jags, with: \\
+	\indent	$y_{i} \sim binom(p_{i}, n_{i})$ \\
+	where the conditional prior:\\
+	\indent	$p_{i} \sim beta(\theta, \theta)$ \\
+	and the hyperprior:\\
+	\indent	$\theta \sim U(0.5, 1000)$ \\
+The population size wass estimated with: \\
+	\indent $ N = \frac{\theta}{4e-7}$ \\
+
+\noindent I obtained the mean value of all Ns from both chains and checked graphically for mixing (which was looking good). The effective sizes for all 100 ps range between 5688 and 7800; $\theta = 6452$ and population size = 6452. 
+My estimate for the midge population size is 1.83 million, see Figure 1 for the estimated allele frequency distribution. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h!]\centering
+	\includegraphics[width=0.7\textwidth]{/home/schimar/Desktop/bda/ps/tex/alleleFreqDist.pdf}
+	\caption{Estimated allele frequency distribution for midge population.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+% For the likelihood, I choose a binomial distribution and for p, I choose a beta-distribution, which is the conjugate of the binomial dist. \\
+
+
+
+\end{document}

@@ -1,0 +1,103 @@
+\documentclass[letterpaper, 12pt]{article}
+%----------------------------------------
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex} 
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+
+\addtolength{\topmargin}{-.875in}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+\pagestyle{myheadings}
+\markright{bda - ps05 - martin schilling}
+
+%---------------------------------------
+\begin{document}
+
+
+\noindent a) The data for $CO_{2}$ flux in bacteria was modeled in jags, with: \\
+	\indent	$y_{i} \sim N(\mu_{i}, \tau)$ \\
+	with the linear model:\\
+	\indent $ \mu_{i} = \beta_{1} + \beta_{2} * x_{temp} + \beta_{3} * x_{substrate} + \beta_{4} * x_{temp} * x_{substrate}$\\
+	the prior:\\
+	\indent $\tau \sim \gamma(0.01, 0.01) $\\
+	and for each $\beta$ :\\
+	\indent $ \beta_{j} \sim N(0, 1e-6)$\\
+
+
+\noindent b) The unnormalized posterior probability distribution is given with:\\
+	\indent $P(\beta, \tau | y, x) \propto \prod_{i} P(y_{i} | \beta, x, \tau) \prod_{j} P(\beta_{j}) P(\tau)$
+
+
+\noindent c) {\verb JAGS  model \\\begin{verbatim}
+model{
+	for(i in 1:N){
+		## normal likelihood on y
+		y[i] ~ dnorm(mu[i], tau)
+		## linear model with interaction and intercept
+		mu[i] <- beta[1] + beta[2] * temp[i] + beta[3] * substrate[i] + beta[4] * temp[i] * substrate[i]
+		## new data for model checking
+		ynew[i] ~ dnorm(mu[i], tau)
+		## residuals for model checking
+		resid[i] <- y[i] - mu[i]
+	}
+	for(j in 1:4){
+		## uninformative priors on reg coeff
+		beta[j] ~ dnorm(0, 1e-6)
+	}
+	## prior on tau
+	tau ~ dgamma(0.01, 0.01)
+
+}
+\end{verbatim} 
+
+
+
+\noindent d) \\
+(i) Both temperature and substrate availability have a positive effect on $CO_{2}$ flux, with substrate having a bigger effect than temperature (in figure 1, almost all of the actual values are within the 95\% confidence intervals). (ii) The interaction between temperature and substrate has an effect on $CO_{2}$ flux, however, it is relatively low compared to the individual effects of temperature and substrate (see table 1). \\
+The model was run for 30,000 iterations on 3 chains, with a burn-in of 1,000 and a thinning interval of 3. I checked for qppropriate mixing by graphical means. The following checks for model fit were performed: Posterior predictive check (see figure 1) and cross-validation by estimation of 20\% of the total number of samples (results not shown here) and $r^2$ (0.986). \\
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h!]\centering
+	\includegraphics[width=0.7\textwidth]{/home/schimar/Desktop/bda/ps/tex/bact_y_ynew.pdf}
+	\caption{Observed vs predicted values. Dotted lines show the 95\% intervals.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{table}[h]
+\caption{Summary statistics for $\beta_{j}$ in linear model}
+\begin{center}
+  \begin{tabular}{ c | l | c | r }
+	& 50\% & 2.5\% & 97.5\% \\
+    \hline
+	intercept ($\beta_{1}$) & 0.33 & -2.77 & 3.73 \\ \hline
+	temperature ($\beta_{2}$) & 0.56 & 0.38 & 0.75 \\ \hline
+	substrate  ($\beta_{3}$) & 2.49 & 1.01 & 3.98 \\ \hline
+	temp \verb x  substrate ($\beta_{4}$) & 1.07 & 0.98 & 1.16 \\ \hline
+    \hline 
+  \end{tabular}
+\end{center}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+% For the likelihood, I choose a binomial distribution and for p, I choose a beta-distribution, which is the conjugate of the binomial dist. \\
+
+
+
+\end{document}

@@ -1,0 +1,64 @@
+\documentclass[letterpaper, 12pt]{article}
+%----------------------------------------
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex} 
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+
+\addtolength{\topmargin}{-.875in}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+\pagestyle{myheadings}
+\markright{bda - ps02 - martin schilling}
+
+%---------------------------------------
+\begin{document}
+
+
+
+		\item For the likelihood, I choose a binomial distribution and for p, I choose a beta-distribution, which is the conjugate of the binomial dist. \\
+
+
+		\item a) uninformative prior distribution:\\
+			 $ \alpha_{0} = 10, \beta_{0} = 10 $\\
+			 $ P(p|y, \alpha_{0}, \beta_{0}) \sim beta(\alpha= 18, \beta= 22) $ \\
+			$ mean = \frac{\alpha}{\alpha+\beta} = 0.449 , ~ 95\% ETPIs = 0.301, 0.604$\\
+
+		      b) informative prior distribution (reflecting prior belief of ESP for individual):\\
+			$ \alpha_{0} = 20, \beta_{0} = 0 $\\
+			$ P(p|y, \alpha_{0}, \beta_{0}) \sim beta(\alpha= 28, \beta= 12) $ \\
+			$ mean = \frac{\alpha}{\alpha+\beta} = 0.7033 , ~ 95\% ETPIs = 0.551, 0.830 $\\
+
+			My hyper-parameters for (a) state that we don't know anything about the person and start with assuming a 50\% chance of having ESP; hyper-parameters for (b) come from a (hypothetical) prior test of the same person, where he/she guessed all cards correctly.\\
+
+		\item With the "informative" prior, I basically say that the person has had only correct guesses in a prior experiment. Given that this ESP example is extremely subjective (at least in my opinion), I arbitrarily say that a person has to score all of them correctly, in order to have ESP. Based on the first experiment, he or she would have had ESP, however, with these new results we update the posterior probability and it does not suffice. \\
+
+	\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item % 2.
+	\begin{enumerate}
+		
+		\item 	$ P(\lambda|y, \alpha_{0}, \beta_{0}) \propto L(\lambda) \times Gamma(\lambda; \alpha_{0}, \beta_{0})$ \\
+
+			$ ~~~~~~~~~~~~~~~~~\propto \lambda^{n} exp(-\lambda n\bar{y}) \times \frac{\beta_{0}^{\alpha_{0}}}{\Gamma(\alpha_{0})} \lambda^{\alpha_{0} -1} exp(-\lambda\beta_{0})$ \\
+
+			$ ~~~~~~~~~~~~~~~~~\propto \lambda^{(\alpha_{0}+n)-1} exp(-\lambda(\beta_{0} + n\bar{y})) $ \\
+
+			$ P(\lambda|y, \alpha_{0}, \beta_{0}) \sim  Gamma(\lambda, \alpha_{0} + n, \beta_{0} + n\bar{y})  $  \\
+
+where: ~~~~
+$ \bar{y} = \frac{1}{n}  \sum\limits_{i=1}^{n} y_{i}$ \\
+
+
+		\item $\alpha_{0}$ can be seen as the number of prior observations, and $\beta_{0}$ as the sum of the prior observations. \\
+			
+	\end{enumerate}
+
+
+
+\end{enumerate}
+
+\end{document}

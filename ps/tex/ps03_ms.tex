@@ -1,0 +1,46 @@
+\documentclass[letterpaper, 12pt]{article}
+%----------------------------------------
+\setlength{\parskip}{1ex plus0.5ex minus0.5ex} 
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+
+\addtolength{\topmargin}{-.875in}
+
+\usepackage{amsmath}
+
+\usepackage[pdftex]{graphicx}
+\pagestyle{myheadings}
+\markright{bda - ps04 - martin schilling}
+
+%---------------------------------------
+\begin{document}
+
+
+\noindent Elk data from two separate sub-populations (control and treatment) consisted of 40 adult weight measurements each. The control sub-population was managed under existing conditions and the treatment group was managed under the proposed stricter regulations. Both data were analyzed individually using a Gibbs sampler (normalGibbs.r), with a normal distribution for the likelihood and a gamma-distribution for $\tau $. We checked for effective size for each parameter ($>$ 9000 for all mu and $\tau$ with 10000 iterations) and autocorrelation (plots not shown here). The resulting posterior distributions were then compared to each other (see also Fig. 1). Based on the ratio of means for treatment and control group, we have found that the stricter regulations resulted in an 8.8\% increase in weight of adult elk. We therefore recommend the implementation of stricter regulations regarding the timing of harvest for Roosevelt elk. (I couldn't quite wrap my head around what you said about calculating the likelihood of the vector of differences from the posterior distributions, could we talk about this in class?). \\
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h!]\centering
+	\includegraphics[width=0.7\textwidth]{/home/schimar/Desktop/bda/modules/mcmc/elk_gibbs.pdf}
+	\caption{Scatterplot of posterior distrbutions for the control group (gray) and the treatment group (red) with overlayed contour showing the density.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+% For the likelihood, I choose a binomial distribution and for p, I choose a beta-distribution, which is the conjugate of the binomial dist. \\
+
+
+
+\end{document}
