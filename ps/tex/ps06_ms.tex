@@ -11,37 +11,99 @@
 
 \usepackage[pdftex]{graphicx}
 \pagestyle{myheadings}
-\markright{bda - ps05 - martin schilling}
+\markright{bda - ps06 - martin schilling}
 
 %---------------------------------------
 \begin{document}
 
 
-\noindent 1) 
+\noindent 1) The data for evolutionary change in virus populations was modeled in jags, with: \\
+	\indent	$y_{i} \sim Poisson(\lambda_{i})$ \\
+linear model:\\
+	\indent $ \eta_{i} = \beta1_{i} + \beta2_{i}  + \beta3_{i} * x_{PopSize} + \epsilon_{i}$\\
+link function: \\
+	\indent $ log(\lambda_{i} = \beta1_{i} + \beta2_{i}  + \beta3_{i} * x_{PopSize} + \epsilon_{i}) $\\
+
+\noindent Priors:\\
+	\indent $ \beta1_{j} \sim N(\alpha_{d}, \nu_{d})$\\
+	\indent $ \beta2_{j} \sim N(\alpha_{d}, \nu_{d})$\\
+	\indent $ \beta3 \sim N(0, 1e^{-6})$\\
+	\indent $ \epsilon_{i} \sim N(0, \tau) $\\
+		
+\noindent with hyperpriors:\\
+	\indent $\alpha_{d} \sim N(0, 1e^{-6})$\\
+	\indent $ \nu_{d} \sim gamma(0.01, 0.01) $\\
+	\indent $ \tau \sim gamma(0.01, 0.01)$\\ 
+	
+
+\noindent 2) {\verb JAGS  model \\\begin{verbatim}
+model{
+	for(i in 1:N){
+		## Poisson likelihhod on y
+		y[i] ~ dpois(lambda[i])
+		## link function and linear model
+		log(lambda[i]) <- beta1[strain[i]] + beta2[line[i]] + beta3 * popSize[strain[i]] 
+	+ epsi[i]
+	}
+
+	for(j in 1:Nstrains){
+		## hierarch model for strains 
+		beta1[j] ~ dnorm(alpha[1], nu[1])
+	}
+
+	for(j in 1:Nlines){
+		## hierarch model for lines # with szc; didn't manage to get the szc running
+		beta2[j] ~ dnorm(alpha[2], nu[2])
+	}
+	## beta2[Nlines]<- sum(beta2[1:(Nlines-1)])
+
+	for(k in 1:N){
+		## prior on epsilon
+		epsi[k] ~ dnorm(0, tau)
+	}
+	
+	for(d in 1:2){
+		## Priors on mean and precision for line and strain
+		alpha[d] ~ dnorm(0, 1e-6)
+		nu[d] ~ dgamma(0.01, 0.01)
+	}
+	
+	## Additional uninformative priors
+	beta3 ~ dnorm(0,1e-6)
+	tau ~ dgamma(0.01,0.01)
+}
+\end{verbatim}
 
 
+\noindent 3) \\
+The model was run with 2 chains, a burn-in period of 4000 and 80,000 iterations. The thinning interval was chosen to be 4.\\
+The covariate population size was centered. I checked for adequate mixing by graphical means and effective sizes (not shown here).\\
 
+\noindent 4) \\
+{\bf (i)} Virion population size affected the molecular substitution rate with a median slope of $1.19e^{-7}$ (with 95\% intervals lying between $-2.18e^{-7}$ and $3.9e^{-7}$)\\
+{\bf (ii)} Variation was roughly the same for both mouse lines and virus strains (see Table 1 for median and 95\% intervals).  \\
+{\bf (iii)} Mean substitution rates were highest for strain 4 (-2.53, with 95\% ci between -8.68 and 3.54) and lowest for strain 2 (-1.49, with 95\% ci between -7.59 and 4.6). \\
 
+\begin{table}[h]
+\caption{Summary statistics for intercepts in generalized linear model. $\beta1_{k}$ = intercept for virus strains; $\beta2_{k}$ = intercept for mouse lines; with k= 5.}
+\begin{center}
+  \begin{tabular}{ c | l | c | r }
+intercept        &         2.5\% &          50\%  &       97.5\% \\ \hline
+$\beta1_{1}$&-8.209 &-2.461  &3.916 \\ \hline
+$\beta1_{2}$&-7.590 &-1.828  &4.601 \\ \hline
+$\beta1_{3}$&-8.293 &-2.614  &3.812 \\ \hline
+$\beta1_{4}$&-8.678 &-2.884  &3.539 \\ \hline
+$\beta1_{5}$&-8.137 &-2.543  &3.937 \\ \hline
+$\beta2_{1}$&-0.8669 & 5.482 &11.220 \\ \hline
+$\beta2_{2}$&-1.338 & 5.052  &10.793 \\ \hline
+$\beta2_{3}$&-1.354 & 5.010  &10.756 \\ \hline
+$\beta2_{4}$&-1.257 & 5.117  &10.838 \\ \hline
+$\beta2_{5}$&-0.8825 & 5.489 &11.231 \\ \hline
 
-\noindent 2)
-
-
-
-
-
-
-
-\noindent 3)
-
-
-
-
-
-\noindent 4)
-
-
-
-
+    \hline 
+  \end{tabular}
+\end{center}
+\end{table}
 
 
 
