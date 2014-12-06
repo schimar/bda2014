@@ -12,6 +12,25 @@ c23<- read.delim("C268_20c.sam", header= F)
 c24 <- read.delim("C268_20c.sam", header= F)
 
 
+##########
+# create simulated data
+c19 <- read.delim("/home/schimar/Desktop/bda/ps/19c.counts", header= F)
+
+cnt19 <- c19[1:32678,]
+
+
+cnt19$V3 <- rnorm(n= 32678, 2000, 1600)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
