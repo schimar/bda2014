@@ -1,0 +1,123 @@
+################ trinity assembly ################
+# for retrofracta
+./Trinity --seqType fq --JM 20G --left /home/mschilling/rna_seq/data/C267_Transcriptome/C2670006_paired_r1.fq --right /home/mschilling/rna_seq/data/C267_Transcriptome/C2670006_paired_r2.fq --CPU 16
+
+# for lignifera
+./Trinity --seqType fq --JM 20G --left /home/mschilling/rna_seq/data/C267_Transcriptome/C2670004_paired_r1.fq --right /home/mschilling/rna_seq/data/C267_Transcriptome/C2670004_paired_r2.fq --CPU 16 --output /home/mschilling/Desktop/ligni
+
+# gunnisoniana
+./Trinity --seqType fq --JM 20G --left /home/mschilling/rna_seq/data/C267_Transcriptome/C2670005_paired_r1.fq --right /home/mschilling/rna_seq/data/C267_Transcriptome/C2670005_paired_r2.fq --CPU 16 --output /home/mschilling/Desktop/gunni
+
+
+# cd-hit-est to cluster the sequences
+
+./cd-hit-est -i /home/mschilling/Desktop/trinityrnaseq_r20140717/trinity_out_dir/Trinity.fasta -o trin.fasta
+
+# express to count the fragments
+~/Desktop/retro/bwa_out$ express -p8 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_19c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p10 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_20c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_21c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_22c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_23c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_24c.sam -o /home/mschilling/Desktop/retro/express_out/ 
+
+################ bwa aligner ################
+# create index using the reference transcriptome
+bwa index -p all /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta
+
+## map the reads to the ref transcriptome
+# control retro
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680019.fq > /home/mschilling/Desktop/C268_19c.sam
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680020.fq > /home/mschilling/Desktop/C268_20c.sam
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680021.fq > /home/mschilling/Desktop/C268_21c.sam
+
+##########
+# trtm retro
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680022.fq > /home/mschilling/Desktop/C268_22c.sam
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680023.fq > /home/mschilling/Desktop/C268_23c.sam
+
+bwa mem -t 4 all \
+/home/mschilling/rna_seq/data/C268_Expression/C2680024.fq > /home/mschilling/Desktop/C268_24c.sam
+
+
+
+###############################
+
+# get gff file from http://www.arabidopsis.org/portals/genAnnotation/gene_structural_annotation/genome_annotation.jsp
+# (TAIR10_GFF3_genes.gff)
+
+# use the perl script (in rna_seq) to convert to gtf 
+perl gff_to_gff.pl /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gff > TAIR10_GFF3_genes.gtf
+###############################
+samtools view /home/mschilling/Desktop/retro/bwa_out/C268_19c.sam | awk -F '\t''(print $3,$4)' |sort | uniq -c > ref_pos_19.txt
+
+samtools view -S /home/mschilling/Desktop/retro/bwa_out/C268_19c.sam | sort | uniq -c > ref_pos_19.txt
+
+###############################
+# sort sam file for cufflinks (see cufflinks.cbcb.umd.edu/tutorial.html)
+
+sort -k 3,3 -k 4,4n <sam_file > hits19c.sam.sorted
+# for all 6 files
+
+cufflinks -o cufflinks_19c bwa_out/hits19c.sam.sorted
+# for all 6 files 
+cufflinks -o /home/mschilling/Desktop/retro/cufflinks/cufflinks_20c hits20c.sam.sorted
+cufflinks -p 8 -o /home/mschilling/Desktop/retro/cufflinks/cufflinks_21c hits21c.sam.sorted
+cufflinks -p 8 -o /home/mschilling/Desktop/retro/cufflinks/cufflinks_22c hits22c.sam.sorted
+cufflinks -p 8 -o /home/mschilling/Desktop/retro/cufflinks/cufflinks_23c hits23c.sam.sorted
+cufflinks -p 8 -o /home/mschilling/Desktop/retro/cufflinks/cufflinks_24c hits24c.sam.sorted
+
+cuffmerge -p 16 assembly_gtf_list.txt
+#########################
+###### note that cufflinks 2.2.1 is now installed and added to $PATH
+#########################
+# cuffquant
+
+./cuffquant -p 8 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits19c.sam.sorted
+cuffquant -p 12 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits20c.sam.sorted
+cuffquant -p 12 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits21c.sam.sorted
+cuffquant -p 12 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits22c.sam.sorted
+cuffquant -p 12 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits23c.sam.sorted
+cuffquant -p 12 -o /home/mschilling/Desktop/retro/cuffquant/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/bwa_out/hits24c.sam.sorted
+
+# run cuffnorm
+
+cuffnorm -p 12 -o /home/mschilling/Desktop/retro/cuffnorm/ /home/mschilling/Desktop/retro/cufflinks/merged_asm/merged.gtf 19_abundances.cxb, 20_abundances.cxb, 21_abundances.cxb 22_abundances.cxb , 23_abundances.cxb , 24_abundances.cxb -o /home/mschilling/Desktop/retro/cuffnorm/
+
+# or with TAIR
+cuffnorm -p 12 -o /home/mschilling/Desktop/retro/cuffnorm/ /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf /home/mschilling/Desktop/retro/cuffquant/19_abundances.cxb, /home/mschilling/Desktop/retro/cuffquant/20_abundances.cxb, /home/mschilling/Desktop/retro/cuffquant/21_abundances.cxb /home/mschilling/Desktop/retro/cuffquant/22_abundances.cxb , /home/mschilling/Desktop/retro/cuffquant/23_abundances.cxb , /home/mschilling/Desktop/retro/cuffquant/24_abundances.cxb -o /home/mschilling/Desktop/retro/cuffnorm/
+
+
+
+
+
+
+
+
+
+###############################
+# use htseq_count to count reads 
+
+#ctrl
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_19c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 19c.counts
+
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_20c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 20c.counts
+
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_21c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 21c.counts
+
+#trtm
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_22c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 22c.counts
+
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_23c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 23c.counts
+
+htseq-count -m intersection-strict --stranded=no /home/mschilling/Desktop/retro/bwa_out/C268_24c.sam /home/mschilling/Desktop/retro/TAIR10_GFF3_genes.gtf > 24c.counts
