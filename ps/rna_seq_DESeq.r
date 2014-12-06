@@ -22,7 +22,10 @@ cnt19 <- c19[1:32678,]
 cnt19$V3 <- rnorm(n= 32678, 2000, 1600)
 
 
+# sample random subset of transcripts
+s19 <- c19[sample(c19,100000),]
 
+s20 <- c20[s19$V2]
 
 
 
