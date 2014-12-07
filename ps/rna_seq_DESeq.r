@@ -1,5 +1,7 @@
-library(DESeq2)
-library(GenomicRanges)
+#library(DESeq2)
+#library(GenomicRanges)
+library(rjags)
+
 
 ##########
 
@@ -28,7 +30,47 @@ rt24 <- read.delim("24_results.xprs", header= T)
 rt24 <- rt24[order(rt24$target_id),]
 
 
-# preparing data
+# preparing data for jags
+# ctrl
+y <- c(rc19$fpkm, rc20$fpkm, rc21$fpkm) #, rt22$fpkm, rt23$fpkm, rt24$fpkm)
+rep <-  c(rep(1, 60709), rep(2, 60709), rep(3, 60709)) #, rep(1, 60709), rep(2, 60709), rep(3, 60709))
+#trtm <- c(rep(0, 182127), rep(1, 182127))
+#data <- list(y= y, trtm = trtm, N= length(trtm), Ntrtm = 2, Nrep= 3)
+data <- list(y= y, N= length(y), Nrep= 3)
+##########
 
-trtm = c(rep(0, 60709), rep(1, 60709))
-data <- list(y= c(rc19$eff_counts, rt22$eff_counts), transcript=  trtm = trtm, N= 60709)
+modDiffExp <- textConnection("model{
+
+	## Poisson likelihood on y
+	for(i in 1:N){
+		for(j in 1:Nrep){
+			y[i,j] ~ dpois(lambda[i])
+		}
+	}
+	
+	## independent priors on lambda (replicates)
+	for(k in 1:Nrep){
+		lambda[k] ~ dgamma(0.01, 0.01) # set up hyperpriors for alpha & beta?
+	}
+
+	## priors on    (treatment)
+	
+
+	## hyperpriors
+	# alpha ~ 
+}")
+
+
+
+##########
+
+compMod <- jags.model(modDiffExp, data= data, n.chains= 2)
+
+update(compMod, n.iter= 2000)
+
+out <- coda.samples(model= compMod, variable.names= c("lambda"), n.iter= 50000, thin= 3)
+
+
+
+
+
