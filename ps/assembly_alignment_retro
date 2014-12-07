@@ -9,17 +9,9 @@
 ./Trinity --seqType fq --JM 20G --left /home/mschilling/rna_seq/data/C267_Transcriptome/C2670005_paired_r1.fq --right /home/mschilling/rna_seq/data/C267_Transcriptome/C2670005_paired_r2.fq --CPU 16 --output /home/mschilling/Desktop/gunni
 
 
-# cd-hit-est to cluster the sequences
+# cd-hit-est to cluster the sequences (retro)
 
 ./cd-hit-est -i /home/mschilling/Desktop/trinityrnaseq_r20140717/trinity_out_dir/Trinity.fasta -o trin.fasta
-
-# express to count the fragments
-~/Desktop/retro/bwa_out$ express -p8 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_19c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p10 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_20c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_21c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_22c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_23c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_24c.sam -o /home/mschilling/Desktop/retro/express_out/ 
 
 ################ bwa aligner ################
 # create index using the reference transcriptome
@@ -48,6 +40,17 @@ bwa mem -t 4 all \
 
 bwa mem -t 4 all \
 /home/mschilling/rna_seq/data/C268_Expression/C2680024.fq > /home/mschilling/Desktop/C268_24c.sam
+
+
+########## eXpress ##########
+
+# express to count the fragments
+~/Desktop/retro/bwa_out$ express -p8 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_19c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p10 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_20c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_21c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_22c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_23c.sam -o /home/mschilling/Desktop/retro/express_out/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_24c.sam -o /home/mschilling/Desktop/retro/express_out/ 
 
 
 
