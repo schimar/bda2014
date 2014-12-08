@@ -92,23 +92,25 @@ out <- coda.samples(model= compMod, variable.names= c("beta1", "beta2", "lambda"
 
 # subset of 1000 random transcripts
 
-sub19 <- rc19[sample(nrow(rc19), 1000),]
-sub20 <- rc20[sub19$target_id,]
-sub21 <- rc21[sub19$target_id,]
-sub22 <- rt22[sub19$target_id,]
-sub23 <- rt23[sub19$target_id,]
-sub24 <- rt24[sub19$target_id,]
+sub19 <- droplevels(rc19[sample(nrow(rc19), 1000),])
+sub20 <- droplevels(rc20[sub19$target_id,])
+sub21 <- droplevels(rc21[sub19$target_id,])
+sub22 <- droplevels(rt22[sub19$target_id,])
+sub23 <- droplevels(rt23[sub19$target_id,])
+sub24 <- droplevels(rt24[sub19$target_id,])
 
 sub1000 <- c(sub19$tot_counts, sub20$tot_counts, sub21$tot_counts, sub22$tot_counts, sub23$tot_counts, sub24$tot_counts)
 subtrtm <- c(rep(0, 3000), rep(1, 3000))
 subtrans <- rep(sub19$target_id,6)
 #
-subdata <- list(y= sub1000, trans= subtrans, trtm= subtrtm, N= length(sub1000), Ntrans= 1000)
+subdata1000 <- list(y= sub1000, trans= subtrans, trtm= subtrtm, N= length(sub1000), Ntrans= 1000)
 
 ## jags model w/ 1000
 
-subMod1000 <- jags.model(modDiffExp, data= subdata, n.chains= 2)
+subMod1000 <- jags.model(modDiffExp, data= subdata1000, n.chains= 2)
 
 update(subMod1000, n.iter= 6000)
 
+out1000 <- coda.samples(model= subMod1000, variable.names= c("beta1", "beta2", "lambda", "tau", "mu"), n.iter= 60000, thin= 3)
 
+est <- summary(out1000)
