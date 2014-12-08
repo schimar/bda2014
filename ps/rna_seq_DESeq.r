@@ -32,12 +32,24 @@ rt24 <- rt24[order(rt24$target_id),]
 
 # preparing data for jags
 # ctrl
-y <- c(rc19$fpkm, rc20$fpkm, rc21$fpkm, rt22$fpkm, rt23$fpkm, rt24$fpkm)
-rep <-  c(rep(1, 60709), rep(2, 60709), rep(3, 60709), rep(1, 60709), rep(2, 60709), rep(3, 60709))
+y <- c(rc19$tot_counts, rc20$tot_counts, rc21$tot_counts, rt22$tot_counts, rt23$tot_counts, rt24$tot_counts)
+#rep <-  c(rep(1, 60709), rep(2, 60709), rep(3, 60709), rep(1, 60709), rep(2, 60709), rep(3, 60709))
 trtm <- c(rep(0, 182127), rep(1, 182127))
 transcript <- c(rc19$target_id, rc20$target_id, rc21$target_id, rt22$target_id, rt23$target_id, rt24$target_id)
-#data <- list(y= y, trtm = trtm, N= length(trtm), Ntrtm = 2, Nrep= 3)
+#
 data <- list(y= y, trans= transcript, trtm= trtm, N= length(y), Ntrans= length(rc19$target_id))
+
+# subset for initial run
+suby <- c(rc19$tot_counts[1:100], rc20$tot_counts[1:100], rc21$tot_counts[1:100], rt22$tot_counts[1:100], rt23$tot_counts[1:100], rt24$tot_counts[1:100])
+subtrtm <- c(rep(0, 300), rep(1, 300))
+subtrans <- c(rc19$target_id[1:100], rc20$target_id[1:100], rc21$target_id[1:100], rt22$target_id[1:100], rt23$target_id[1:100], rt24$target_id[1:100])
+#
+subdata <- list(y= suby, trans= subtrans, trtm= subtrtm, N= length(suby), Ntrans= 100)
+
+
+
+
+
 ##########
 
 modDiffExp <- textConnection("model{
@@ -53,10 +65,10 @@ modDiffExp <- textConnection("model{
 		beta1[k] ~ dnorm(mu, tau[1])
 	}
 
-	for(l in 1:Ntrans){
+	for(l in 1:Ntrans-1){
 		beta2[l] ~ dnorm(0, tau[2])
 	}
-	beta2[Ntrans]<- sum(beta2[1:Ntrans-1)])	
+	beta2[Ntrans]<- -sum(beta2[1:(Ntrans-1)])	
 
 	## hyperpriors
 	for(m in 1:2){
@@ -79,9 +91,9 @@ modDiffExp <- textConnection("model{
 
 compMod <- jags.model(modDiffExp, data= data, n.chains= 2)
 
-update(compMod, n.iter= 2000)
+update(compMod, n.iter= 0)
 
-out <- coda.samples(model= compMod, variable.names= c("lambda"), n.iter= 50000, thin= 3)
+out <- coda.samples(model= compMod, variable.names= c("beta1", "beta2", "lambda", "tau", "mu"), n.iter= 10000, thin= 3)
 
 
 
