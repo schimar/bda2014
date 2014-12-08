@@ -79,23 +79,36 @@ modDiffExp <- textConnection("model{
 }")
 
 
-# non-integer x = 8.672166Initializing model
-# Deleting model
 
-# Error in jags.model(modDiffExp, data = data, n.chains = 2) : 
-#  Error in node y[1]
-# Observed node inconsistent with unobserved parents at initialization.
-# Try setting appropriate initial values.
 
 ##########
 
 compMod <- jags.model(modDiffExp, data= data, n.chains= 2)
 
-update(compMod, n.iter= 0)
+update(compMod, n.iter= 6000)
 
 out <- coda.samples(model= compMod, variable.names= c("beta1", "beta2", "lambda", "tau", "mu"), n.iter= 10000, thin= 3)
 
 
+# subset of 1000 random transcripts
 
+sub19 <- rc19[sample(nrow(rc19), 1000),]
+sub20 <- rc20[sub19$target_id,]
+sub21 <- rc21[sub19$target_id,]
+sub22 <- rt22[sub19$target_id,]
+sub23 <- rt23[sub19$target_id,]
+sub24 <- rt24[sub19$target_id,]
+
+sub1000 <- c(sub19$tot_counts, sub20$tot_counts, sub21$tot_counts, sub22$tot_counts, sub23$tot_counts, sub24$tot_counts)
+subtrtm <- c(rep(0, 3000), rep(1, 3000))
+subtrans <- rep(sub19$target_id,6)
+#
+subdata <- list(y= sub1000, trans= subtrans, trtm= subtrtm, N= length(sub1000), Ntrans= 1000)
+
+## jags model w/ 1000
+
+subMod1000 <- jags.model(modDiffExp, data= subdata, n.chains= 2)
+
+update(subMod1000, n.iter= 6000)
 
 
