@@ -32,32 +32,37 @@ rt24 <- rt24[order(rt24$target_id),]
 
 # preparing data for jags
 # ctrl
-y <- c(rc19$fpkm, rc20$fpkm, rc21$fpkm) #, rt22$fpkm, rt23$fpkm, rt24$fpkm)
-rep <-  c(rep(1, 60709), rep(2, 60709), rep(3, 60709)) #, rep(1, 60709), rep(2, 60709), rep(3, 60709))
-#trtm <- c(rep(0, 182127), rep(1, 182127))
+y <- c(rc19$fpkm, rc20$fpkm, rc21$fpkm, rt22$fpkm, rt23$fpkm, rt24$fpkm)
+rep <-  c(rep(1, 60709), rep(2, 60709), rep(3, 60709), rep(1, 60709), rep(2, 60709), rep(3, 60709))
+trtm <- c(rep(0, 182127), rep(1, 182127))
+transcript <- c(rc19$target_id, rc20$target_id, rc21$target_id, rt22$target_id, rt23$target_id, rt24$target_id)
 #data <- list(y= y, trtm = trtm, N= length(trtm), Ntrtm = 2, Nrep= 3)
-data <- list(y= y, N= length(y), Nrep= 3)
+data <- list(y= y, trans= transcript, trtm= trtm, N= length(y), Ntrans= length(rc19$target_id))
 ##########
 
 modDiffExp <- textConnection("model{
 
 	## Poisson likelihood on y
 	for(i in 1:N){
-		for(j in 1:Nrep){
-			y[i,j] ~ dpois(lambda[i])
-		}
+		y[i] ~ dpois(lambda[i])
+		log(lambda[i]) <- beta1[trans[i]] + beta2[trans[i]] * trtm[i] 
 	}
 	
-	## independent priors on lambda (replicates)
-	for(k in 1:Nrep){
-		lambda[k] ~ dgamma(0.01, 0.01) # set up hyperpriors for alpha & beta?
+	## priors on betas 
+	for(k in 1:Ntrans){
+		beta1[k] ~ dnorm(mu, tau[1])
 	}
 
-	## priors on    (treatment)
+	for(l in 1:Ntrans){
+		beta2[l] ~ dnorm(0, tau[2])
+	}
 	
-
 	## hyperpriors
-	# alpha ~ 
+	for(m in 1:2){
+		tau[m] ~ dgamma(0.01, 0.01)
+	}
+	mu ~ dnorm(0, 1e-6)
+		
 }")
 
 
