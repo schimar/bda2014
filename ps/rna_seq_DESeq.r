@@ -42,7 +42,7 @@ data <- list(y= y, trans= transcript, trtm= trtm, N= length(y), Ntrans= length(r
 
 modDiffExp <- textConnection("model{
 
-	## Poisson likelihood on y
+	## likelihood on y
 	for(i in 1:N){
 		y[i] ~ dpois(lambda[i])
 		log(lambda[i]) <- beta1[trans[i]] + beta2[trans[i]] * trtm[i] 
@@ -56,7 +56,7 @@ modDiffExp <- textConnection("model{
 	for(l in 1:Ntrans){
 		beta2[l] ~ dnorm(0, tau[2])
 	}
-	
+	beta2[Ntrans]<- sum(beta2[1:Ntrans-1)])	
 	## hyperpriors
 	for(m in 1:2){
 		tau[m] ~ dgamma(0.01, 0.01)
@@ -66,6 +66,13 @@ modDiffExp <- textConnection("model{
 }")
 
 
+# non-integer x = 8.672166Initializing model
+# Deleting model
+
+# Error in jags.model(modDiffExp, data = data, n.chains = 2) : 
+#  Error in node y[1]
+# Observed node inconsistent with unobserved parents at initialization.
+# Try setting appropriate initial values.
 
 ##########
 
