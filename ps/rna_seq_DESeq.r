@@ -57,6 +57,7 @@ modDiffExp <- textConnection("model{
 		beta2[l] ~ dnorm(0, tau[2])
 	}
 	beta2[Ntrans]<- sum(beta2[1:Ntrans-1)])	
+
 	## hyperpriors
 	for(m in 1:2){
 		tau[m] ~ dgamma(0.01, 0.01)
