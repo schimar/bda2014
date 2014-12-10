@@ -167,5 +167,12 @@ error.bar <- function(x, y, upper, lower, length=0.1,...){
     arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
     }
 
+#############
+# check for mixing and convergence
+
+effS <- effectiveSize(out1000)
+
+gelman.diag(x= out1000, transform= T)
+gelman.plot(x= out1000, transform= T) 
 
 
