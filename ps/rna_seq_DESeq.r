@@ -86,7 +86,7 @@ modDiffExp <- textConnection("model{
 compMod <- jags.model(modDiffExp, data= data, n.chains= 2)
 
 update(compMod, n.iter= 6000)
-
+statK <- as.data.frame(est[[1]])
 out <- coda.samples(model= compMod, variable.names= c("beta1", "beta2", "lambda", "tau", "mu"), n.iter= 10000, thin= 3)
 
 
@@ -114,3 +114,58 @@ update(subMod1000, n.iter= 6000)
 out1000 <- coda.samples(model= subMod1000, variable.names= c("beta1", "beta2", "lambda", "tau", "mu"), n.iter= 60000, thin= 3)
 
 est <- summary(out1000)
+
+quaK <- as.data.frame(est[[2]])
+statK <- as.data.frame(est[[1]])
+colnames(quaK) <- c("q2.5", "q25", "q50", "q75", "q97.5")
+beta1 <- quaK[1:1000,]
+beta1$trans <- subdata1000$trans[1:1000]
+beta1 <- beta1[order(beta1$trans),]
+beta2 <- quaK[1001:2000,]
+beta2$trans <- subdata1000$trans[1:1000]
+beta2 <- beta2[order(beta2$trans),]   
+
+beta2$exp <- rep(1, 1000)
+beta2$exp[beta2$q2.5 >0] <- 2
+beta2$exp[beta2$q97.5 < 0] <- 3
+
+# proportions
+# beta1 
+table(beta1$q2.5 > 0)
+table(beta1$q97.5 < 0)
+
+# beta2 
+table(beta2$q2.5 > 0)
+table(beta2$q97.5 < 0)
+
+overBeta2median <- beta2$q50[which(beta2$q2.5 >0)]
+underBeta2median <- beta2$q50[which(beta2$q97.5 <0)]
+###
+overExpTrans <- sort(subdata1000$trans[which(beta2$q2.5 >0)])
+underExpTrans <- sort(subdata1000$trans[which(beta2$q97.5 <0)])
+
+write.csv(subdata1000$trans, "sub1000transcripts.csv")
+write.csv(overExpTrans, "trans1000_overExp.csv")
+write.csv(underExpTrans, "trans1000_underExp.csv")
+
+# plot 
+
+#plot(beta2$trans, beta2$q50, col= beta2$exp)
+#abline(h=0)
+#points(beta2$q50[beta2$q2.5>0], col= "green", pch= 20)
+#points(beta2$q50[beta2$q97.5<0], col= "red", pch= 20)
+
+# barplot
+barx <- barplot(beta2$q50, col= as.vector(beta2$exp), ylim= c(-8, 15), border= F, ylab= "Estimated abundance", xlab= "Transcripts")
+box()
+
+
+# meh, these are way too big...
+error.bar <- function(x, y, upper, lower, length=0.1,...){
+	if(length(x) != length(y) | length(y) !=length(lower) | length(lower) != length(upper))
+    		stop("vectors must be same length")
+    arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
+    }
+
+
+
