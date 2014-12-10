@@ -1,3 +1,19 @@
+import pysam as ps
+
+c19 = ps.AlignmentFile("/home/mschilling/Desktop/retro/bwa_out/C268_19c.sam", "r")
+
+
+
+
+
+
+
+
+
+
+
+
+#############################################
 import numpy
 import itertools as it
 
