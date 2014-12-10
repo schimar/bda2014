@@ -20,7 +20,8 @@ bwa index -p all /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta
 ## map the reads to the ref transcriptome
 # control retro
 
-bwa mem -t 4 all \
+bwa mem -t 4 all \000]>0]
+medquaKunder <- quaK$q50[1001:2000][quaK$q97.5[1001:
 /home/mschilling/rna_seq/data/C268_Expression/C2680019.fq > /home/mschilling/Desktop/C268_19c.sam
 
 bwa mem -t 4 all \
@@ -49,12 +50,12 @@ bwa mem -t 4 all \
 express -p10 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_20c.sam -o /home/mschilling/Desktop/retro/express_out/
 express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_21c.sam -o /home/mschilling/Desktop/retro/express_out/
 express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_22c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_23c.sam -o /home/mschilling/Desktop/retro/express_out/
-express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_24c.sam -o /home/mschilling/Desktop/retro/express_out/ 
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_23c.sam -o /home/mschilling/Desktop/retro/express_out/c23/
+express -p12 /home/mschilling/Desktop/retro/cd-hit-est_out/trin.fasta C268_24c.sam -o /home/mschilling/Desktop/retro/express_out/c24/
 
 
-
-###############################
+#########################################################################
+#########################################################################
 
 # get gff file from http://www.arabidopsis.org/portals/genAnnotation/gene_structural_annotation/genome_annotation.jsp
 # (TAIR10_GFF3_genes.gff)
